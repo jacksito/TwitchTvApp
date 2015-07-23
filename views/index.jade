@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  script.
+    $( document ).ready(function() {
+      var processing;
+      $(document).scroll(function (e) {
+
+        if (processing)
+          return false;
+
+        if ($(window).scrollTop() >= ($(document).height() - $(window).height()) * 0.9) {
+          processing = true;
+          $.get("/more-games", function (data) {
+            for (var i = 0; i < data.length; i++) {
+              $("#mytable").find('tbody')
+                      .append($('<tr>').append($('<td>').append($('<img>').attr('src', data[i].game.box.medium)))
+                              .append($('<td>').append($('<a>').attr('href', 'game/' + data[i].game.name).append($('<strong>').append($('<p>').append(data[i].game.name)))))
+                              .append($('<td>').append($('<p>').append(data[i].viewers)))
+              );
+              processing = false;
+            }
+          });
+        }
+        ;
+      });
+    });
+  h1= title
+  p Top Twitch games #{title}
+
+    div
+      table#mytable(class='table table-striped table-hover')
+        thead
+          tr
+            th
+            th Name
+            th Viewers
+        tbody
+          each item in data
+            tr
+              td: img(src=item.game.box.medium)
+              td: a(href='game/'+ item.game.name): strong #{item.game.name}
+              td: p #{item.viewers}
+      button#btn(class='btn btn-primary') Be Awersome

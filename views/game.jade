@@ -1,0 +1,54 @@
+//
+   Created by Jack on 06/07/2015.
+extends layout
+
+block content
+   script.
+      $( document ).ready(function() {
+         var processing;
+         $(document).scroll(function (e) {
+
+            if (processing)
+               return false;
+
+            if ($(window).scrollTop() >= ($(document).height() - $(window).height()) * 0.9) {
+               processing = true;
+               $.get("/more-streamers", function (data) {
+                  //alert('got data' + data.length)
+                  for (var i = 0; i < data.length; i++) {
+                     $("#streamertable").find('tbody')
+                             .append($('<tr>').append($('<td>').append($('<img>').attr('src', data[i].preview.medium)))
+                                     .append($('<td>').append($('<div>')
+                                             .append($('<ul>').append($('<a>').attr('href', '../streamer/'+data[i].channel.name).append($('<strong>').append($('<p>').attr('class', 'text-center').append(data[i].channel.name)))))
+                                             .append($('<ul>').append($('<p>').attr('class', 'text-center').append(data[i].channel.status)))
+                                     ))
+                                     .append($('<td>').append($('<p>').append(data[i].viewers)))
+                                     .append($('<td>').append($('<p>').append(data[i].channel.followers)))
+                     );
+                     processing = false;
+                  }
+               });
+            }
+            ;
+         });
+      });
+   h1=title
+
+   div
+      table#streamertable(class='table table-striped table-hover')
+         thead
+            tr
+               th
+               th
+                  p(class='text-center') Streamer
+               th Viewers
+               th Followers
+         tbody
+            each item in data
+               tr
+                  td: img(src=item.preview.medium)
+                  td: div
+                        ul: a(href="../streamer/"+item.channel.name): strong: p(class='text-center') #{item.channel.name}
+                        ul: p(class='text-center') #{item.channel.status}
+                  td: p #{item.viewers}
+                  td: p #{item.channel.followers}
