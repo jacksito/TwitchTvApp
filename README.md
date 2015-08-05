@@ -1,2 +1,2 @@
 # TwitchTvApp
-Fun with twitch rest API
+Fun with twitch Rest API
